@@ -1,18 +1,13 @@
 package dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.gateway;
 
-import dev.melqui.commitconventionalsgerenatorapi.application.dto.CommitDto;
 import dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.Commit;
 import dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.DynamoService;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
-import software.amazon.awssdk.services.dynamodb.model.BatchGetItemRequest;
-import software.amazon.awssdk.services.dynamodb.model.BatchGetItemResponse;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
-import software.amazon.awssdk.services.dynamodb.model.KeysAndAttributes;
 import software.amazon.awssdk.services.dynamodb.model.ScanResponse;
 
 import javax.enterprise.context.ApplicationScoped;

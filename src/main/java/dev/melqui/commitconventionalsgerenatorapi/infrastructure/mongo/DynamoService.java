@@ -6,7 +6,6 @@ import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public abstract class DynamoService {
 
@@ -26,7 +25,11 @@ public abstract class DynamoService {
     }
 
     public ScanRequest scanRequest() {
-        return ScanRequest.builder().tableName(getTableName()).attributesToGet(getAttributesToGet()).build();
+        return ScanRequest.builder()
+                .tableName(getTableName())
+                .attributesToGet(getAttributesToGet())
+                .limit(5)
+                .build();
     }
 
 

@@ -4,7 +4,6 @@ import dev.melqui.commitconventionalsgerenatorapi.application.dto.CommitDto;
 import dev.melqui.commitconventionalsgerenatorapi.application.usecase.CommitUseCase;
 import io.smallrye.mutiny.Uni;
 import lombok.extern.jbosslog.JBossLog;
-import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -30,7 +29,7 @@ public class CommitResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Uni<CommitDto>  persist(CommitDto commitDTO) {
+    public Uni<CommitDto> persist(CommitDto commitDTO) {
         return commitUseCase.persist(commitDTO);
     }
 }
