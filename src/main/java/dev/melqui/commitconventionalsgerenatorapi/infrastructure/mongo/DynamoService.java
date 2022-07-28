@@ -1,6 +1,7 @@
 package dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import software.amazon.awssdk.services.dynamodb.model.DeleteItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 
@@ -29,6 +30,13 @@ public abstract class DynamoService {
                 .tableName(getTableName())
                 .attributesToGet(getAttributesToGet())
                 .limit(5)
+                .build();
+    }
+
+    public DeleteItemRequest deleteRequest(String uuid) {
+        return DeleteItemRequest.builder()
+                .tableName(getTableName())
+                .key(Map.of(KEY, AttributeValue.builder().s(uuid).build()))
                 .build();
     }
 

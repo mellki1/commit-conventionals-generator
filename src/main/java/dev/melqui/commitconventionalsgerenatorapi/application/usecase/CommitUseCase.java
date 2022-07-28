@@ -1,8 +1,8 @@
 package dev.melqui.commitconventionalsgerenatorapi.application.usecase;
 
 import dev.melqui.commitconventionalsgerenatorapi.application.dto.CommitDto;
+import dev.melqui.commitconventionalsgerenatorapi.application.gateway.CommitGateway;
 import dev.melqui.commitconventionalsgerenatorapi.application.mapper.CommitMapper;
-import dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.gateway.CommitGatewayRepository;
 import io.smallrye.mutiny.Uni;
 import lombok.extern.jbosslog.JBossLog;
 
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class CommitUseCase {
 
     @Inject
-    CommitGatewayRepository commitGateway;
+    CommitGateway commitGateway;
 
     @Inject
     CommitMapper commitMapper;
@@ -29,5 +29,14 @@ public class CommitUseCase {
     public Uni<CommitDto> persist(CommitDto commitDTO) {
         return commitGateway.persistCommit(commitMapper.toEntity(commitDTO))
                 .map(commitMapper::toDto);
+    }
+
+    public Uni<CommitDto> getCommit(String commitId) {
+        return commitGateway.getCommit(commitId)
+                .map(commitMapper::toDto);
+    }
+
+    public void delete(String commitId) {
+        commitGateway.deleteCommit(commitId);
     }
 }

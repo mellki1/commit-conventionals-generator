@@ -1,5 +1,6 @@
 package dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.gateway;
 
+import dev.melqui.commitconventionalsgerenatorapi.application.gateway.CommitGateway;
 import dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.Commit;
 import dev.melqui.commitconventionalsgerenatorapi.infrastructure.mongo.DynamoService;
 import io.smallrye.mutiny.Multi;
@@ -19,11 +20,12 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class CommitGatewayRepository extends DynamoService {
+public class CommitGatewayRepository extends DynamoService implements CommitGateway {
 
     @Inject
     DynamoDbAsyncClient dynamoDbClient;
 
+   @Override
     public Uni<List<Commit>> listAllCommits() {
         return Multi.createFrom()
                 .completionStage(
@@ -36,12 +38,13 @@ public class CommitGatewayRepository extends DynamoService {
                 .toUni();
     }
 
-    public Uni<Commit> getRequest(String id) {
+    @Override
+    public Uni<Commit> getCommit(String commitId) {
         return Multi.createFrom()
                 .completionStage(
                         dynamoDbClient
                                 .getItem(GetItemRequest.builder()
-                                        .key(Map.of("id", AttributeValue.builder().s(id).build()))
+                                        .key(Map.of("id", AttributeValue.builder().s(commitId).build()))
                                         .tableName(getTableName())
                                         .build())
                 )
@@ -51,18 +54,24 @@ public class CommitGatewayRepository extends DynamoService {
                 .toUni();
     }
 
+    @Override
     public Uni<Commit> persistCommit(Commit commit) {
         commit.setId(UUID.randomUUID().toString());
         var putRequest = putRequest(commit);
         return Multi.createFrom()
                 .completionStage(dynamoDbClient.putItem(putRequest))
                 .map(putItemResponse ->
-                        getRequest(commit.getId())
+                        this.getCommit(commit.getId())
                                 .await()
                                 .asOptional()
                                 .atMost(Duration.ofSeconds(1))
                                 .orElseThrow()
                 )
                 .toUni();
+    }
+
+    @Override
+    public void deleteCommit(String commitId) {
+        dynamoDbClient.deleteItem(deleteRequest(commitId));
     }
 }
